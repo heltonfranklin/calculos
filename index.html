@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculadora de Parcelas</title>
+    <title>Calculadora de Parcelas - Reserva São José</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
@@ -47,6 +47,11 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #007BFF;
+            outline: none;
         }
         .center-text {
             text-align: center;
@@ -67,9 +72,19 @@
             font-size: 16px;
             cursor: pointer;
             margin-top: 20px;
+            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #0056b3;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 20px;
+            }
+            th, td {
+                padding: 10px;
+            }
         }
     </style>
     <script>
@@ -139,7 +154,7 @@
 <body>
     <div class="container">
         <img src="rdcaimoveis.png" alt="RDCA Imóveis" class="logo">
-        <h1 class="center-text">Calculadora de Parcelas</h1>
+        <h1 class="center-text">Calculadora de Parcelas - Reserva São José</h1>
         <table>
             <tr>
                 <th>Descrição</th>
