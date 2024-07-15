@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Calculadora de Preços</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
@@ -21,7 +22,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
+            width: 90%;
             max-width: 400px;
             text-align: center;
             margin: 0 auto;
@@ -32,7 +33,7 @@
             margin-top: 20px;
         }
         th, td {
-            padding: 15px;
+            padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -75,18 +76,14 @@
             cursor: pointer;
             margin-top: 20px;
             transition: background-color 0.3s;
+            width: 100%;
         }
         button:hover {
             background-color: #0056b3;
         }
-        @media (max-width: 1080px) {
-            .container {
-                width: 100%;
-                padding: 20px;
-                max-width: none;
-            }
+        @media (max-width: 600px) {
             th, td {
-                padding: 10px;
+                padding: 8px;
                 font-size: 14px;
             }
             input[type="text"], input[type="number"] {
@@ -96,14 +93,6 @@
             button {
                 padding: 8px 16px;
                 font-size: 14px;
-            }
-        }
-        @media (max-height: 1920px) {
-            body {
-                padding: 20px;
-            }
-            .container {
-                padding: 20px;
             }
         }
     </style>
