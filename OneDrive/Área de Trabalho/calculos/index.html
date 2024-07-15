@@ -67,23 +67,34 @@
 
         function calcularValores() {
             var valorProposta = parseCurrency(document.getElementById("valorProposta").value);
+            if (isNaN(valorProposta) || valorProposta <= 0) {
+                document.getElementById("resultados").classList.add("hidden");
+                return;
+            }
             var entrada = valorProposta * 0.2;
             var saldo = valorProposta - entrada;
             document.getElementById("entrada").innerText = formatCurrency(entrada);
             document.getElementById("saldo").innerText = formatCurrency(saldo);
 
-            // Calcular valores das parcelas e total pago
-            var parcelas = [
-                { qtd: 12, taxaJuros: 0.00 },
-                { qtd: 24, taxaJuros: 0.05 },
-                { qtd: 36, taxaJuros: 0.10 },
-                { qtd: 48, taxaJuros: 0.15 },
-                { qtd: 60, taxaJuros: 0.20 },
-                { qtd: 80, taxaJuros: 0.25 }
+            // Taxas de juros aproximadas
+            var taxasJuros = [
+                { qtd: 12, taxa: 0.0 },
+                { qtd: 24, taxa: 0.120 },
+                { qtd: 36, taxa: 0.120 },
+                { qtd: 48, taxa: 0.120 },
+                { qtd: 60, taxa: 0.120 },
+                { qtd: 80, taxa: 0.120 }
             ];
 
-            parcelas.forEach(function(parcela) {
-                var valorParcela = (saldo * (1 + parcela.taxaJuros)) / parcela.qtd;
+            taxasJuros.forEach(function(parcela) {
+                var valorParcela;
+                if (parcela.taxa === 0) {
+                    valorParcela = saldo / parcela.qtd;
+                } else {
+                    var i = parcela.taxa / 12; // Taxa mensal
+                    var n = parcela.qtd;
+                    valorParcela = saldo * i / (1 - Math.pow(1 + i, -n));
+                }
                 var total = valorParcela * parcela.qtd;
                 document.getElementById("parcela" + parcela.qtd).innerText = formatCurrency(valorParcela);
                 document.getElementById("total" + parcela.qtd).innerText = formatCurrency(total);
