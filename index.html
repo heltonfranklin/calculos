@@ -8,7 +8,7 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             background-color: #f4f4f4;
@@ -18,6 +18,9 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
         }
         table {
             width: 100%;
@@ -44,6 +47,10 @@
         }
         .hidden {
             display: none;
+        }
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
         }
     </style>
     <script>
@@ -79,11 +86,11 @@
             // Taxas de juros aproximadas
             var taxasJuros = [
                 { qtd: 12, taxa: 0.0 },
-                { qtd: 24, taxa: 0.120 },
-                { qtd: 36, taxa: 0.120 },
-                { qtd: 48, taxa: 0.120 },
-                { qtd: 60, taxa: 0.120 },
-                { qtd: 80, taxa: 0.120 }
+                { qtd: 24, taxa: 0.12 },
+                { qtd: 36, taxa: 0.12 },
+                { qtd: 48, taxa: 0.12 },
+                { qtd: 60, taxa: 0.12 },
+                { qtd: 80, taxa: 0.12 }
             ];
 
             taxasJuros.forEach(function(parcela) {
@@ -110,6 +117,7 @@
 </head>
 <body>
     <div class="container">
+        <img src="rdcaimoveis.png" alt="RDCA Imóveis" class="logo">
         <h1 class="center-text">Calculadora de Parcelas - Reserva São José</h1>
         <table>
             <tr>
