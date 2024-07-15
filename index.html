@@ -3,8 +3,10 @@
 <head>
     <title>Calculadora de Parcelas</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Open Sans', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -14,13 +16,13 @@
         }
         .container {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             width: 90%;
             max-width: 600px;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 40px;
         }
         table {
             width: 100%;
@@ -28,26 +30,23 @@
             margin-top: 20px;
         }
         th, td {
-            padding: 12px;
+            padding: 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #007BFF;
+            color: white;
+            font-weight: 600;
         }
         input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
+            margin: 10px 0;
             box-sizing: border-box;
             border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
+            font-size: 16px;
         }
         .center-text {
             text-align: center;
@@ -58,6 +57,19 @@
         .logo {
             width: 150px;
             margin-bottom: 20px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
     <script>
@@ -76,7 +88,6 @@
             var input = event.target;
             var value = parseCurrency(input.value);
             input.value = formatCurrency(value);
-            calcularValores();
         }
 
         function calcularValores() {
@@ -121,6 +132,7 @@
         window.onload = function() {
             document.getElementById("valorProposta").addEventListener("input", formatInput);
             document.getElementById("outraEntrada").addEventListener("input", formatInput);
+            document.getElementById("calcular").addEventListener("click", calcularValores);
         }
     </script>
 </head>
@@ -160,6 +172,7 @@
                 <td></td>
             </tr>
         </table>
+        <button id="calcular">Calcular</button>
         <div id="resultados" class="hidden">
             <table>
                 <tr>
