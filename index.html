@@ -62,7 +62,7 @@
             document.getElementById("entrada").innerText = formatCurrency(entrada);
             document.getElementById("saldo").innerText = formatCurrency(saldo);
 
-            // Calcular valores das parcelas
+            // Calcular valores das parcelas e total pago
             var parcela12 = saldo / 12;
             var parcela60 = saldo / 60;
             var parcela60ComJuros = parcela60 * 1.1; // Exemplo com juros
@@ -70,12 +70,25 @@
             var parcela180ComJurosCorrecao = (parcela60 / 3) * 1.08; // Exemplo com juros e correção
             var parcela240ComJurosCorrecao = (parcela60 / 4) * 1.1; // Exemplo com juros e correção
 
+            var total12 = parcela12 * 12;
+            var total60 = parcela60 * 60;
+            var total60ComJuros = parcela60ComJuros * 60;
+            var total120ComJurosCorrecao = parcela120ComJurosCorrecao * 120;
+            var total180ComJurosCorrecao = parcela180ComJurosCorrecao * 180;
+            var total240ComJurosCorrecao = parcela240ComJurosCorrecao * 240;
+
             document.getElementById("parcela12").innerText = formatCurrency(parcela12);
+            document.getElementById("total12").innerText = formatCurrency(total12);
             document.getElementById("parcela60").innerText = formatCurrency(parcela60);
+            document.getElementById("total60").innerText = formatCurrency(total60);
             document.getElementById("parcela60ComJuros").innerText = formatCurrency(parcela60ComJuros);
+            document.getElementById("total60ComJuros").innerText = formatCurrency(total60ComJuros);
             document.getElementById("parcela120ComJurosCorrecao").innerText = formatCurrency(parcela120ComJurosCorrecao);
+            document.getElementById("total120ComJurosCorrecao").innerText = formatCurrency(total120ComJurosCorrecao);
             document.getElementById("parcela180ComJurosCorrecao").innerText = formatCurrency(parcela180ComJurosCorrecao);
+            document.getElementById("total180ComJurosCorrecao").innerText = formatCurrency(total180ComJurosCorrecao);
             document.getElementById("parcela240ComJurosCorrecao").innerText = formatCurrency(parcela240ComJurosCorrecao);
+            document.getElementById("total240ComJurosCorrecao").innerText = formatCurrency(total240ComJurosCorrecao);
         }
 
         function formatInput(event) {
@@ -97,56 +110,67 @@
                 <th>Descrição</th>
                 <th>Valor</th>
                 <th>Observações</th>
+                <th>Total Pago</th>
             </tr>
             <tr>
                 <td>Valor Proposta</td>
                 <td><input type="text" id="valorProposta" value="R$ 215.600,00" oninput="calcularValores()" onblur="formatInput(event)"></td>
+                <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Entrada 20%</td>
                 <td id="entrada">R$ 43.120,00</td>
                 <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td>Saldo</td>
                 <td id="saldo">R$ 172.480,00</td>
+                <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Qtde Parcelas</td>
                 <td>Valor</td>
                 <td>Observações</td>
+                <td>Total Pago</td>
             </tr>
             <tr>
                 <td>12</td>
                 <td id="parcela12">R$ 14.373,33</td>
                 <td>SEM juros e SEM correção - Fixas</td>
+                <td id="total12">R$ 172.480,00</td>
             </tr>
             <tr>
                 <td>60</td>
                 <td id="parcela60">R$ 3.836,72</td>
                 <td>SEM juros e SEM correção - Fixas</td>
+                <td id="total60">R$ 230.203,20</td>
             </tr>
             <tr>
                 <td>60</td>
                 <td id="parcela60ComJuros">R$ 4.210,39</td>
                 <td>COM juros e SEM correção - Fixas</td>
+                <td id="total60ComJuros">R$ 252.623,40</td>
             </tr>
             <tr>
                 <td>120</td>
                 <td id="parcela120ComJurosCorrecao">R$ 2.018,36</td>
                 <td>COM juros e COM correção</td>
+                <td id="total120ComJurosCorrecao">R$ 242.203,20</td>
             </tr>
             <tr>
                 <td>180</td>
                 <td id="parcela180ComJurosCorrecao">R$ 1.720,91</td>
                 <td>COM juros e COM correção</td>
+                <td id="total180ComJurosCorrecao">R$ 309.763,80</td>
             </tr>
             <tr>
                 <td>240</td>
                 <td id="parcela240ComJurosCorrecao">R$ 1.437,25</td>
                 <td>COM juros e COM correção</td>
+                <td id="total240ComJurosCorrecao">R$ 344.940,00</td>
             </tr>
         </table>
     </div>
