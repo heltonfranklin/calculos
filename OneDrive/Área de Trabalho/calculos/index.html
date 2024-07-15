@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculadora de Parcelas</title>
+    <title>Calculadora de Preços</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
@@ -12,6 +12,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            height: 100vh;
             background-color: #f4f4f4;
         }
         .container {
@@ -20,9 +22,9 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             width: 90%;
-            max-width: 600px;
+            max-width: 500px;
             text-align: center;
-            margin-top: 40px;
+            margin: 0 auto;
         }
         table {
             width: 100%;
@@ -77,10 +79,11 @@
         button:hover {
             background-color: #0056b3;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 1080px) {
             .container {
                 width: 100%;
                 padding: 20px;
+                max-width: 400px;
             }
             th, td {
                 padding: 10px;
@@ -93,6 +96,14 @@
             button {
                 padding: 8px 16px;
                 font-size: 14px;
+            }
+        }
+        @media (max-height: 1920px) {
+            body {
+                padding: 20px;
+            }
+            .container {
+                padding: 20px;
             }
         }
     </style>
@@ -145,9 +156,7 @@
                     var n = parcela.qtd;
                     valorParcela = saldo * i / (1 - Math.pow(1 + i, -n));
                 }
-                var total = valorParcela * parcela.qtd;
                 document.getElementById("parcela" + parcela.qtd).innerText = formatCurrency(valorParcela);
-                document.getElementById("total" + parcela.qtd).innerText = formatCurrency(total);
             });
 
             document.getElementById("resultados").classList.remove("hidden");
@@ -163,37 +172,27 @@
 <body>
     <div class="container">
         <img src="rdcaimoveis.png" alt="RDCA Imóveis" class="logo">
-        <h1 class="center-text">Calculadora de Parcelas</h1>
+        <h1 class="center-text">Calculadora de Preços</h1>
         <table>
             <tr>
                 <th>Descrição</th>
                 <th>Valor</th>
-                <th>Observações</th>
-                <th>Total Pago</th>
             </tr>
             <tr>
                 <td>Valor Proposta</td>
                 <td><input type="text" id="valorProposta" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
-                <td></td>
-                <td></td>
             </tr>
             <tr>
                 <td>Entrada 20%</td>
                 <td id="entrada"></td>
-                <td></td>
-                <td></td>
             </tr>
             <tr>
                 <td>Outra Entrada</td>
                 <td><input type="text" id="outraEntrada" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
-                <td></td>
-                <td></td>
             </tr>
             <tr>
                 <td>Saldo</td>
                 <td id="saldo"></td>
-                <td></td>
-                <td></td>
             </tr>
         </table>
         <button id="calcular">Calcular</button>
@@ -202,44 +201,30 @@
                 <tr>
                     <th>Qtde Parcelas</th>
                     <th>Valor</th>
-                    <th>Observações</th>
-                    <th>Total Pago</th>
                 </tr>
                 <tr>
                     <td>12</td>
                     <td id="parcela12"></td>
-                    <td>SEM juros e SEM correção - Fixas</td>
-                    <td id="total12"></td>
                 </tr>
                 <tr>
                     <td>24</td>
                     <td id="parcela24"></td>
-                    <td>COM juros e SEM correção - Fixas</td>
-                    <td id="total24"></td>
                 </tr>
                 <tr>
                     <td>36</td>
                     <td id="parcela36"></td>
-                    <td>COM juros e COM correção</td>
-                    <td id="total36"></td>
                 </tr>
                 <tr>
                     <td>48</td>
                     <td id="parcela48"></td>
-                    <td>COM juros e COM correção</td>
-                    <td id="total48"></td>
                 </tr>
                 <tr>
                     <td>60</td>
                     <td id="parcela60"></td>
-                    <td>COM juros e COM correção</td>
-                    <td id="total60"></td>
                 </tr>
                 <tr>
                     <td>80</td>
                     <td id="parcela80"></td>
-                    <td>COM juros e COM correção</td>
-                    <td id="total80"></td>
                 </tr>
             </table>
         </div>
