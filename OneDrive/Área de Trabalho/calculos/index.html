@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora de Parcelas - Reserva São José</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .center-text {
+            text-align: center;
+        }
+    </style>
+    <script>
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function parseCurrency(value) {
+            return parseFloat(value.replace(/\D/g, '')) / 100;
+        }
+
+        function calcularValores() {
+            var valorProposta = parseCurrency(document.getElementById("valorProposta").value);
+            var entrada = valorProposta * 0.2;
+            var saldo = valorProposta - entrada;
+            document.getElementById("entrada").innerText = formatCurrency(entrada);
+            document.getElementById("saldo").innerText = formatCurrency(saldo);
+
+            // Calcular valores das parcelas
+            var parcela12 = saldo / 12;
+            var parcela60 = saldo / 60;
+            var parcela60ComJuros = parcela60 * 1.1; // Exemplo com juros
+            var parcela120ComJurosCorrecao = (parcela60 / 2) * 1.05; // Exemplo com juros e correção
+            var parcela180ComJurosCorrecao = (parcela60 / 3) * 1.08; // Exemplo com juros e correção
+            var parcela240ComJurosCorrecao = (parcela60 / 4) * 1.1; // Exemplo com juros e correção
+
+            document.getElementById("parcela12").innerText = formatCurrency(parcela12);
+            document.getElementById("parcela60").innerText = formatCurrency(parcela60);
+            document.getElementById("parcela60ComJuros").innerText = formatCurrency(parcela60ComJuros);
+            document.getElementById("parcela120ComJurosCorrecao").innerText = formatCurrency(parcela120ComJurosCorrecao);
+            document.getElementById("parcela180ComJurosCorrecao").innerText = formatCurrency(parcela180ComJurosCorrecao);
+            document.getElementById("parcela240ComJurosCorrecao").innerText = formatCurrency(parcela240ComJurosCorrecao);
+        }
+
+        function formatInput(event) {
+            var input = event.target;
+            var value = parseCurrency(input.value);
+            input.value = formatCurrency(value);
+        }
+
+        window.onload = function() {
+            calcularValores();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-text">Calculadora de Parcelas - Reserva São José</h1>
+        <table>
+            <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Observações</th>
+            </tr>
+            <tr>
+                <td>Valor Proposta</td>
+                <td><input type="text" id="valorProposta" value="R$ 215.600,00" oninput="calcularValores()" onblur="formatInput(event)"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Entrada 20%</td>
+                <td id="entrada">R$ 43.120,00</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Saldo</td>
+                <td id="saldo">R$ 172.480,00</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Qtde Parcelas</td>
+                <td>Valor</td>
+                <td>Observações</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td id="parcela12">R$ 14.373,33</td>
+                <td>SEM juros e SEM correção - Fixas</td>
+            </tr>
+            <tr>
+                <td>60</td>
+                <td id="parcela60">R$ 3.836,72</td>
+                <td>SEM juros e SEM correção - Fixas</td>
+            </tr>
+            <tr>
+                <td>60</td>
+                <td id="parcela60ComJuros">R$ 4.210,39</td>
+                <td>COM juros e SEM correção - Fixas</td>
+            </tr>
+            <tr>
+                <td>120</td>
+                <td id="parcela120ComJurosCorrecao">R$ 2.018,36</td>
+                <td>COM juros e COM correção</td>
+            </tr>
+            <tr>
+                <td>180</td>
+                <td id="parcela180ComJurosCorrecao">R$ 1.720,91</td>
+                <td>COM juros e COM correção</td>
+            </tr>
+            <tr>
+                <td>240</td>
+                <td id="parcela240ComJurosCorrecao">R$ 1.437,25</td>
+                <td>COM juros e COM correção</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
