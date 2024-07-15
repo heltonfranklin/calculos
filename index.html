@@ -128,13 +128,22 @@
         function calcularValores() {
             var valorProposta = parseCurrency(document.getElementById("valorProposta").value);
             var outraEntrada = parseCurrency(document.getElementById("outraEntrada").value) || 0;
+
+            // Se houver um valor no campo "Outra Entrada", zere o campo "Entrada 20%"
+            var entrada = 0;
+            if (outraEntrada > 0) {
+                document.getElementById("entrada").innerText = formatCurrency(0);
+            } else {
+                entrada = valorProposta * 0.2;
+                document.getElementById("entrada").innerText = formatCurrency(entrada);
+            }
+
             if (isNaN(valorProposta) || valorProposta <= 0) {
                 document.getElementById("resultados").classList.add("hidden");
                 return;
             }
-            var entrada = valorProposta * 0.2 + outraEntrada;
-            var saldo = valorProposta - entrada;
-            document.getElementById("entrada").innerText = formatCurrency(entrada);
+
+            var saldo = valorProposta - (outraEntrada || entrada);
             document.getElementById("saldo").innerText = formatCurrency(saldo);
 
             // Taxas de juros aproximadas
@@ -164,7 +173,10 @@
 
         window.onload = function() {
             document.getElementById("valorProposta").addEventListener("input", formatInput);
-            document.getElementById("outraEntrada").addEventListener("input", formatInput);
+            document.getElementById("outraEntrada").addEventListener("input", function(event) {
+                formatInput(event);
+                document.getElementById("entrada").innerText = formatCurrency(0);
+            });
             document.getElementById("calcular").addEventListener("click", calcularValores);
         }
     </script>
