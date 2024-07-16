@@ -144,6 +144,7 @@
 
             if (isNaN(valorProposta) || valorProposta <= 0) {
                 document.getElementById("resultados").classList.add("hidden");
+                document.getElementById("compartilhar").classList.add("hidden");
                 return;
             }
 
@@ -173,6 +174,7 @@
             });
 
             document.getElementById("resultados").classList.remove("hidden");
+            document.getElementById("compartilhar").classList.remove("hidden");
         }
 
         function compartilharWhatsApp() {
@@ -208,6 +210,7 @@
             });
             document.getElementById("calcular").addEventListener("click", calcularValores);
             document.getElementById("compartilhar").addEventListener("click", compartilharWhatsApp);
+            document.getElementById("compartilhar").classList.add("hidden");
         }
     </script>
 </head>
@@ -235,7 +238,6 @@
                     <td>Outra Entrada</td>
                     <td><input type="text" id="outraEntrada" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
                 </tr>
-               
                 <tr>
                     <td>Taxa de Juros Mensal (%)</td>
                     <td><input type="number" id="taxaJuros" placeholder="1.0" step="0.01"></td>
@@ -283,7 +285,7 @@
                 </tbody>
             </table>
         </div>
-        <button id="compartilhar" class="btn btn-success">Compartilhar no WhatsApp</button>
+        <button id="compartilhar" class="btn btn-success hidden">Compartilhar no WhatsApp</button>
     </div>
 </body>
 </html>
