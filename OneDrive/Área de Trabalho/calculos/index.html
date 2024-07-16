@@ -135,24 +135,36 @@
         }
 
         function compartilharWhatsApp() {
-            var mensagem = [
-                `Proposta de Financiamento:\n`,
-                `Valor Proposta: ${document.getElementById("valorProposta").value}`,
-                `Entrada 20%: ${document.getElementById("entrada").innerText}`,
-                `Outra Entrada: ${document.getElementById("outraEntrada").value}`,
-                `Saldo: ${document.getElementById("saldo").innerText}`,
-                `Taxa de Juros Mensal: ${document.getElementById("taxaJuros").value}%\n`,
-                `Parcelas:\n`
-            ].concat([12, 24, 36, 48, 60, 80].map(parcela => 
-                `Parcela ${parcela} meses: ${document.getElementById(`parcela${parcela}`).innerText}\n`
-            )).join('');
+            var valorProposta = document.getElementById("valorProposta").value;
+            var entrada = document.getElementById("entrada").innerText;
+            var outraEntrada = document.getElementById("outraEntrada").value;
+            var saldo = document.getElementById("saldo").innerText;
+            var taxaJuros = document.getElementById("taxaJuros").value;
 
-            window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
+            var mensagem = `Proposta de Financiamento:\n\n`
+                + `Valor Proposta: ${valorProposta}\n`
+                + `Entrada 20%: ${entrada}\n`
+                + `Outra Entrada: ${outraEntrada}\n`
+                + `Saldo: ${saldo}\n`
+                + `Taxa de Juros Mensal: ${taxaJuros}%\n\n`
+                + `Parcelas:\n`;
+
+            var parcelas = ["12", "24", "36", "48", "60", "80"];
+            parcelas.forEach(function(parcela) {
+                var valorParcela = document.getElementById(`parcela${parcela}`).innerText;
+                mensagem += `Parcela ${parcela} meses: ${valorParcela}\n`;
+            });
+
+            var link = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
+            window.open(link, '_blank');
         }
 
         window.onload = function() {
             document.getElementById("valorProposta").addEventListener("input", formatInput);
-            document.getElementById("outraEntrada").addEventListener("input", formatInput);
+            document.getElementById("outraEntrada").addEventListener("input", function(event) {
+                formatInput(event);
+                document.getElementById("entrada").innerText = formatCurrency(0);
+            });
             document.getElementById("calcular").addEventListener("click", calcularValores);
             document.getElementById("compartilhar").addEventListener("click", compartilharWhatsApp);
             document.getElementById("compartilhar").classList.add("hidden");
