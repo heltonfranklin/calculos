@@ -48,7 +48,7 @@
         .form-row .input-wrapper {
             flex: 2;
         }
-        input[type="text"], input[type="number"] {
+        input[type="text"], input[type="number"], input[type="tel"] {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
@@ -79,7 +79,7 @@
             border-color: #1e7e34;
         }
         @media (max-width: 600px) {
-            input[type="text"], input[type="number"], button {
+            input[type="text"], input[type="number"], input[type="tel"], button {
                 font-size: 12px;
                 padding: 6px;
             }
@@ -89,8 +89,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script>
-        // Configuração do Firebase (copiada do console do Firebase)
-        var firebaseConfig = {
+         // Configuração do Firebase (copiada do console do Firebase)
+         var firebaseConfig = {
             apiKey: "AIzaSyCCY__CG6z3Eh8911ovTUuH6oPcy52PdrU",
             authDomain: "calculospmt.firebaseapp.com",
             projectId: "calculospmt",
@@ -120,6 +120,8 @@
         }
 
         function calcularValores() {
+            var nome = document.getElementById("nome").value;
+            var telefone = document.getElementById("telefone").value;
             var valorProposta = parseCurrency(document.getElementById("valorProposta").value);
             var outraEntrada = parseCurrency(document.getElementById("outraEntrada").value) || 0;
             var taxaJurosMensal = parseFloat(document.getElementById("taxaJuros").value) / 100 || 0.01;
@@ -149,6 +151,8 @@
 
             // Salvar proposta no Firestore
             db.collection("propostas").add({
+                nome: nome,
+                telefone: telefone,
                 valorProposta: valorProposta,
                 entrada: entrada,
                 outraEntrada: outraEntrada,
@@ -169,13 +173,15 @@
         }
 
         function compartilharWhatsApp() {
+            var nome = document.getElementById("nome").value;
+            var telefone = document.getElementById("telefone").value;
             var valorProposta = document.getElementById("valorProposta").value;
             var entrada = document.getElementById("entrada").innerText;
             var outraEntrada = document.getElementById("outraEntrada").value;
             var saldo = document.getElementById("saldo").innerText;
             var taxaJuros = document.getElementById("taxaJuros").value;
 
-            var mensagem = `Proposta de Financiamento:\n\n`
+            var mensagem = `Proposta de Financiamento para ${nome}:\n\n`
                 + `Valor Proposta: ${valorProposta}\n`
                 + `Entrada 20%: ${entrada}\n`
                 + `Outra Entrada: ${outraEntrada}\n`
@@ -189,8 +195,38 @@
                 mensagem += `Parcela ${parcela} meses: ${valorParcela}\n`;
             });
 
-            var link = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
+            var link = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
             window.open(link, '_blank');
+        }
+
+        function carregarPropostas() {
+            db.collection("propostas").orderBy("data", "desc").get()
+            .then((querySnapshot) => {
+                var propostasHTML = '';
+                querySnapshot.forEach((doc) => {
+                    var proposta = doc.data();
+                    propostasHTML += `<div class="proposta">
+                        <p><strong>Nome:</strong> ${proposta.nome}</p>
+                        <p><strong>Telefone:</strong> ${proposta.telefone}</p>
+                        <p><strong>Valor Proposta:</strong> ${formatCurrency(proposta.valorProposta)}</p>
+                        <p><strong>Entrada:</strong> ${formatCurrency(proposta.entrada)}</p>
+                        <p><strong>Outra Entrada:</strong> ${formatCurrency(proposta.outraEntrada)}</p>
+                                                <p><strong>Saldo:</strong> ${formatCurrency(proposta.saldo)}</p>
+                        <p><strong>Taxa de Juros Mensal:</strong> ${(proposta.taxaJuros * 100).toFixed(2)}%</p>
+                        <p><strong>Parcelas:</strong></p>
+                        <ul>`;
+                    proposta.parcelas.forEach(parcela => {
+                        propostasHTML += `<li>${parcela.qtd} meses: ${formatCurrency(parcela.valor)}</li>`;
+                    });
+                    propostasHTML += `</ul>
+                        <p><strong>Data:</strong> ${proposta.data.toDate().toLocaleString()}</p>
+                    </div><hr>`;
+                });
+                document.getElementById("propostas").innerHTML = propostasHTML;
+            })
+            .catch((error) => {
+                console.error("Erro ao carregar propostas: ", error);
+            });
         }
 
         window.onload = function() {
@@ -202,6 +238,7 @@
             document.getElementById("calcular").addEventListener("click", calcularValores);
             document.getElementById("compartilhar").addEventListener("click", compartilharWhatsApp);
             document.getElementById("compartilhar").classList.add("hidden");
+            document.getElementById("carregarPropostas").addEventListener("click", carregarPropostas);
         }
     </script>
 </head>
@@ -209,6 +246,18 @@
     <div class="container">
         <img src="rdcaimoveis.png" alt="RDCA Imóveis" class="logo">
         <h1 class="center-text">Cálculo de PMT</h1>
+        <div class="form-row">
+            <label for="nome">Nome</label>
+            <div class="input-wrapper">
+                <input type="text" id="nome" placeholder="Nome">
+            </div>
+        </div>
+        <div class="form-row">
+            <label for="telefone">Telefone</label>
+            <div class="input-wrapper">
+                <input type="tel" id="telefone" placeholder="DDD + Número">
+            </div>
+        </div>
         <div class="form-row">
             <label for="valorProposta">Valor Proposta</label>
             <div class="input-wrapper">
@@ -259,7 +308,8 @@
             </table>
         </div>
         <button id="compartilhar" class="btn btn-success hidden">Compartilhar no WhatsApp</button>
+        <button id="carregarPropostas" class="btn btn-secondary">Carregar Propostas</button>
+        <div id="propostas"></div>
     </div>
 </body>
 </html>
-
