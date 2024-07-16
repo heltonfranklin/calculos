@@ -3,20 +3,18 @@
 <head>
     <title>Cálculo de PMT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
         body {
             font-family: 'Open Sans', sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             background-color: #f4f4f4;
+            margin: 0;
         }
         .container {
             background-color: #fff;
@@ -26,76 +24,16 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
-            margin: 20px auto;
         }
         .logo {
             width: 120px;
             margin-bottom: 20px;
         }
         h1 {
-            margin-bottom: 20px;
             font-size: 20px;
             font-weight: 700;
             color: #007BFF;
-        }
-        table {
-            width: 100%;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #007BFF;
-            color: white;
-            font-weight: 600;
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin: 8px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            text-align: center;
-        }
-        input[type="text"]:focus, input[type="number"]:focus {
-            border-color: #007BFF;
-            outline: none;
-        }
-        .center-text {
-            text-align: center;
-        }
-        .hidden {
-            display: none;
-        }
-        button {
-            background-color: #007BFF;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #0056b3;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
+            margin-bottom: 20px;
         }
         .form-row {
             display: flex;
@@ -105,24 +43,46 @@
         }
         .form-row label {
             flex: 1;
-            text-align: left;
             padding-right: 10px;
+            text-align: left;
         }
         .form-row .input-wrapper {
             flex: 2;
         }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+            margin: 8px 0;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
         @media (max-width: 600px) {
-            th, td {
+            input[type="text"], input[type="number"], button {
+                font-size: 12px;
                 padding: 6px;
-                font-size: 12px;
-            }
-            input[type="text"], input[type="number"] {
-                padding: 6px;
-                font-size: 12px;
-            }
-            button {
-                padding: 8px;
-                font-size: 12px;
             }
         }
     </style>
@@ -149,14 +109,8 @@
             var outraEntrada = parseCurrency(document.getElementById("outraEntrada").value) || 0;
             var taxaJurosMensal = parseFloat(document.getElementById("taxaJuros").value) / 100 || 0.01;
 
-            // Se houver um valor no campo "Outra Entrada", zere o campo "Entrada 20%"
-            var entrada = 0;
-            if (outraEntrada > 0) {
-                document.getElementById("entrada").innerText = formatCurrency(0);
-            } else {
-                entrada = valorProposta * 0.2;
-                document.getElementById("entrada").innerText = formatCurrency(entrada);
-            }
+            var entrada = outraEntrada > 0 ? 0 : valorProposta * 0.2;
+            document.getElementById("entrada").innerText = formatCurrency(entrada);
 
             if (isNaN(valorProposta) || valorProposta <= 0) {
                 document.getElementById("resultados").classList.add("hidden");
@@ -167,25 +121,12 @@
             var saldo = valorProposta - (outraEntrada || entrada);
             document.getElementById("saldo").innerText = formatCurrency(saldo);
 
-            // Taxas de juros
-            var taxasJuros = [
-                { qtd: 12, taxa: 0.0 },
-                { qtd: 24, taxa: taxaJurosMensal },
-                { qtd: 36, taxa: taxaJurosMensal },
-                { qtd: 48, taxa: taxaJurosMensal },
-                { qtd: 60, taxa: taxaJurosMensal },
-                { qtd: 80, taxa: taxaJurosMensal }
-            ];
+            var taxasJuros = [12, 24, 36, 48, 60, 80].map(qtd => ({ qtd, taxa: qtd === 12 ? 0.0 : taxaJurosMensal }));
 
-            taxasJuros.forEach(function(parcela) {
-                var valorParcela;
-                if (parcela.taxa === 0) {
-                    valorParcela = saldo / parcela.qtd;
-                } else {
-                    var i = parcela.taxa; // Taxa mensal
-                    var n = parcela.qtd;
-                    valorParcela = saldo * i / (1 - Math.pow(1 + i, -n));
-                }
+            taxasJuros.forEach(parcela => {
+                var valorParcela = parcela.taxa === 0 
+                    ? saldo / parcela.qtd 
+                    : saldo * parcela.taxa / (1 - Math.pow(1 + parcela.taxa, -parcela.qtd));
                 document.getElementById("parcela" + parcela.qtd).innerText = formatCurrency(valorParcela);
             });
 
@@ -194,36 +135,24 @@
         }
 
         function compartilharWhatsApp() {
-            var valorProposta = document.getElementById("valorProposta").value;
-            var entrada = document.getElementById("entrada").innerText;
-            var outraEntrada = document.getElementById("outraEntrada").value;
-            var saldo = document.getElementById("saldo").innerText;
-            var taxaJuros = document.getElementById("taxaJuros").value;
+            var mensagem = [
+                `Proposta de Financiamento:\n`,
+                `Valor Proposta: ${document.getElementById("valorProposta").value}`,
+                `Entrada 20%: ${document.getElementById("entrada").innerText}`,
+                `Outra Entrada: ${document.getElementById("outraEntrada").value}`,
+                `Saldo: ${document.getElementById("saldo").innerText}`,
+                `Taxa de Juros Mensal: ${document.getElementById("taxaJuros").value}%\n`,
+                `Parcelas:\n`
+            ].concat([12, 24, 36, 48, 60, 80].map(parcela => 
+                `Parcela ${parcela} meses: ${document.getElementById(`parcela${parcela}`).innerText}\n`
+            )).join('');
 
-            var mensagem = `Proposta de Financiamento:\n\n`
-                + `Valor Proposta: ${valorProposta}\n`
-                + `Entrada 20%: ${entrada}\n`
-                + `Outra Entrada: ${outraEntrada}\n`
-                + `Saldo: ${saldo}\n`
-                + `Taxa de Juros Mensal: ${taxaJuros}%\n\n`
-                + `Parcelas:\n`;
-
-            var parcelas = ["12", "24", "36", "48", "60", "80"];
-            parcelas.forEach(function(parcela) {
-                var valorParcela = document.getElementById(`parcela${parcela}`).innerText;
-                mensagem += `Parcela ${parcela} meses: ${valorParcela}\n`;
-            });
-
-            var link = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
-            window.open(link, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
         }
 
         window.onload = function() {
             document.getElementById("valorProposta").addEventListener("input", formatInput);
-            document.getElementById("outraEntrada").addEventListener("input", function(event) {
-                formatInput(event);
-                document.getElementById("entrada").innerText = formatCurrency(0);
-            });
+            document.getElementById("outraEntrada").addEventListener("input", formatInput);
             document.getElementById("calcular").addEventListener("click", calcularValores);
             document.getElementById("compartilhar").addEventListener("click", compartilharWhatsApp);
             document.getElementById("compartilhar").classList.add("hidden");
@@ -237,7 +166,7 @@
         <div class="form-row">
             <label for="valorProposta">Valor Proposta</label>
             <div class="input-wrapper">
-                <input type="text" id="valorProposta" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00" style="text-align: center;">
+                <input type="text" id="valorProposta" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00">
             </div>
         </div>
         <div class="form-row">
@@ -249,7 +178,7 @@
         <div class="form-row">
             <label for="outraEntrada">Outra Entrada</label>
             <div class="input-wrapper">
-                <input type="text" id="outraEntrada" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00" style="text-align: center;">
+                <input type="text" id="outraEntrada" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00">
             </div>
         </div>
         <div class="form-row">
@@ -274,30 +203,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>12</td>
-                        <td id="parcela12"></td>
-                    </tr>
-                    <tr>
-                        <td>24</td>
-                        <td id="parcela24"></td>
-                    </tr>
-                    <tr>
-                        <td>36</td>
-                        <td id="parcela36"></td>
-                    </tr>
-                    <tr>
-                        <td>48</td>
-                        <td id="parcela48"></td>
-                    </tr>
-                    <tr>
-                        <td>60</td>
-                        <td id="parcela60"></td>
-                    </tr>
-                    <tr>
-                        <td>80</td>
-                        <td id="parcela80"></td>
-                    </tr>
+                    <tr><td>12</td><td id="parcela12"></td></tr>
+                    <tr><td>24</td><td id="parcela24"></td></tr>
+                    <tr><td>36</td><td id="parcela36"></td></tr>
+                    <tr><td>48</td><td id="parcela48"></td></tr>
+                    <tr><td>60</td><td id="parcela60"></td></tr>
+                    <tr><td>80</td><td id="parcela80"></td></tr>
                 </tbody>
             </table>
         </div>
