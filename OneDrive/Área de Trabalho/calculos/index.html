@@ -43,7 +43,6 @@
         }
         .form-row label {
             flex: 1;
-            padding-right: 10px;
             text-align: left;
         }
         .form-row .input-wrapper {
@@ -86,7 +85,23 @@
             }
         }
     </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script>
+        // Configuração do Firebase (copiada do console do Firebase)
+        var firebaseConfig = {
+            apiKey: "AIzaSyCCY__CG6z3Eh8911ovTUuH6oPcy52PdrU",
+            authDomain: "calculospmt.firebaseapp.com",
+            projectId: "calculospmt",
+            storageBucket: "calculospmt.appspot.com",
+            messagingSenderId: "370875634609",
+            appId: "1:370875634609:web:f2a99bdf94d721e02ce390"
+        };
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+
         function formatCurrency(value) {
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
@@ -123,11 +138,30 @@
 
             var taxasJuros = [12, 24, 36, 48, 60, 80].map(qtd => ({ qtd, taxa: qtd === 12 ? 0.0 : taxaJurosMensal }));
 
+            var parcelas = [];
             taxasJuros.forEach(parcela => {
                 var valorParcela = parcela.taxa === 0 
                     ? saldo / parcela.qtd 
                     : saldo * parcela.taxa / (1 - Math.pow(1 + parcela.taxa, -parcela.qtd));
                 document.getElementById("parcela" + parcela.qtd).innerText = formatCurrency(valorParcela);
+                parcelas.push({ qtd: parcela.qtd, valor: valorParcela });
+            });
+
+            // Salvar proposta no Firestore
+            db.collection("propostas").add({
+                valorProposta: valorProposta,
+                entrada: entrada,
+                outraEntrada: outraEntrada,
+                saldo: saldo,
+                taxaJuros: taxaJurosMensal,
+                parcelas: parcelas,
+                data: new Date()
+            })
+            .then((docRef) => {
+                console.log("Proposta adicionada com ID: ", docRef.id);
+            })
+            .catch((error) => {
+                console.error("Erro ao adicionar proposta: ", error);
             });
 
             document.getElementById("resultados").classList.remove("hidden");
@@ -228,3 +262,4 @@
     </div>
 </body>
 </html>
+
