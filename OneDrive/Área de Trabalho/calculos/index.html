@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
         body {
             font-family: 'Open Sans', sans-serif;
             margin: 0;
@@ -18,7 +20,7 @@
         }
         .container {
             background-color: #fff;
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             width: 90%;
@@ -50,16 +52,62 @@
             color: white;
             font-weight: 600;
         }
-        .btn-primary {
-            background-color: #007BFF;
-            border-color: #007BFF;
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        .center-text {
+            text-align: center;
         }
         .hidden {
             display: none;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        @media (max-width: 600px) {
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            input[type="text"], input[type="number"] {
+                padding: 8px;
+                font-size: 14px;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
         }
     </style>
     <script>
@@ -168,62 +216,71 @@
         <img src="rdcaimoveis.png" alt="RDCA Imóveis" class="logo">
         <h1 class="center-text">Cálculo de PMT</h1>
         <table class="table">
-            <tr>
-                <th>Descrição</th>
-                <th>Valor</th>
-            </tr>
-            <tr>
-                <td>Valor Proposta</td>
-                <td><input type="text" id="valorProposta" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
-            </tr>
-            <tr>
-                <td>Entrada 20%</td>
-                <td id="entrada"></td>
-            </tr>
-            <tr>
-                <td>Outra Entrada</td>
-                <td><input type="text" id="outraEntrada" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
-            </tr>
-            <tr>
-                <td>Taxa de Juros Mensal (%)</td>
-                <td><input type="number" id="taxaJuros" placeholder="1.0" step="0.01"></td>
-            </tr>
-            <tr>
-                <td>Saldo</td>
-                <td id="saldo"></td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Valor Proposta</td>
+                    <td><input type="text" id="valorProposta" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
+                </tr>
+                <tr>
+                    <td>Entrada 20%</td>
+                    <td id="entrada"></td>
+                </tr>
+                <tr>
+                    <td>Outra Entrada</td>
+                    <td><input type="text" id="outraEntrada" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
+                </tr>
+               
+                <tr>
+                    <td>Taxa de Juros Mensal (%)</td>
+                    <td><input type="number" id="taxaJuros" placeholder="1.0" step="0.01"></td>
+                </tr>
+                <tr>
+                    <td>Saldo</td>
+                    <td id="saldo"></td>
+                </tr>
+            </tbody>
         </table>
         <button id="calcular" class="btn btn-primary">Calcular</button>
         <div id="resultados" class="hidden">
             <table class="table">
-                <tr>
-                    <th>Qtde Parcelas</th>
-                    <th>Valor</th>
-                </tr>
-                <tr>
-                    <td>12</td>
-                    <td id="parcela12"></td>
-                </tr>
-                <tr>
-                    <td>24</td>
-                    <td id="parcela24"></td>
-                </tr>
-                <tr>
-                    <td>36</td>
-                    <td id="parcela36"></td>
-                </tr>
-                <tr>
-                    <td>48</td>
-                    <td id="parcela48"></td>
-                </tr>
-                <tr>
-                    <td>60</td>
-                    <td id="parcela60"></td>
-                </tr>
-                <tr>
-                    <td>80</td>
-                    <td id="parcela80"></td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Qtde Parcelas</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>12</td>
+                        <td id="parcela12"></td>
+                    </tr>
+                    <tr>
+                        <td>24</td>
+                        <td id="parcela24"></td>
+                    </tr>
+                    <tr>
+                        <td>36</td>
+                        <td id="parcela36"></td>
+                    </tr>
+                    <tr>
+                        <td>48</td>
+                        <td id="parcela48"></td>
+                    </tr>
+                    <tr>
+                        <td>60</td>
+                        <td id="parcela60"></td>
+                    </tr>
+                    <tr>
+                        <td>80</td>
+                        <td id="parcela80"></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <button id="compartilhar" class="btn btn-success">Compartilhar no WhatsApp</button>
