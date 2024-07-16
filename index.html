@@ -24,26 +24,26 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
             text-align: center;
             margin: 20px auto;
         }
         .logo {
-            width: 150px;
+            width: 120px;
             margin-bottom: 20px;
         }
         h1 {
             margin-bottom: 20px;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: #007BFF;
         }
         table {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         th, td {
-            padding: 10px;
+            padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -54,13 +54,14 @@
         }
         input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 8px;
+            margin: 8px 0;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 14px;
             transition: border-color 0.3s;
+            text-align: center;
         }
         input[type="text"]:focus, input[type="number"]:focus {
             border-color: #007BFF;
@@ -75,17 +76,18 @@
         button {
             background-color: #007BFF;
             color: white;
-            padding: 10px 20px;
+            padding: 10px;
             border: none;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s;
+            margin-top: 15px;
+            transition: background-color 0.3s, box-shadow 0.3s;
             width: 100%;
         }
         button:hover {
             background-color: #0056b3;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
         .btn-success {
             background-color: #28a745;
@@ -95,18 +97,32 @@
             background-color: #218838;
             border-color: #1e7e34;
         }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .form-row label {
+            flex: 1;
+            text-align: left;
+            padding-right: 10px;
+        }
+        .form-row .input-wrapper {
+            flex: 2;
+        }
         @media (max-width: 600px) {
             th, td {
-                padding: 8px;
-                font-size: 14px;
+                padding: 6px;
+                font-size: 12px;
             }
             input[type="text"], input[type="number"] {
-                padding: 8px;
-                font-size: 14px;
+                padding: 6px;
+                font-size: 12px;
             }
             button {
-                padding: 8px 16px;
-                font-size: 14px;
+                padding: 8px;
+                font-size: 12px;
             }
         }
     </style>
@@ -218,36 +234,36 @@
     <div class="container">
         <img src="rdcaimoveis.png" alt="RDCA Imóveis" class="logo">
         <h1 class="center-text">Cálculo de PMT</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Descrição</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Valor Proposta</td>
-                    <td><input type="text" id="valorProposta" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
-                </tr>
-                <tr>
-                    <td>Entrada 20%</td>
-                    <td id="entrada"></td>
-                </tr>
-                <tr>
-                    <td>Outra Entrada</td>
-                    <td><input type="text" id="outraEntrada" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00"></td>
-                </tr>
-                <tr>
-                    <td>Taxa de Juros Mensal (%)</td>
-                    <td><input type="number" id="taxaJuros" value="1.0" placeholder="1.0" step="0.01"></td>
-                </tr>
-                <tr>
-                    <td>Saldo</td>
-                    <td id="saldo"></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="form-row">
+            <label for="valorProposta">Valor Proposta</label>
+            <div class="input-wrapper">
+                <input type="text" id="valorProposta" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00" style="text-align: center;">
+            </div>
+        </div>
+        <div class="form-row">
+            <label for="entrada">Entrada 20%</label>
+            <div class="input-wrapper">
+                <div id="entrada" style="text-align: center;">R$ 0,00</div>
+            </div>
+        </div>
+        <div class="form-row">
+            <label for="outraEntrada">Outra Entrada</label>
+            <div class="input-wrapper">
+                <input type="text" id="outraEntrada" inputmode="numeric" pattern="[0-9]*" placeholder="R$ 0,00" style="text-align: center;">
+            </div>
+        </div>
+        <div class="form-row">
+            <label for="taxaJuros">Taxa de Juros Mensal (%)</label>
+            <div class="input-wrapper">
+                <input type="number" id="taxaJuros" value="1.0" placeholder="1.0" step="0.01">
+            </div>
+        </div>
+        <div class="form-row">
+            <label for="saldo">Saldo</label>
+            <div class="input-wrapper">
+                <div id="saldo" style="text-align: center;">R$ 0,00</div>
+            </div>
+        </div>
         <button id="calcular" class="btn btn-primary">Calcular</button>
         <div id="resultados" class="hidden">
             <table class="table">
@@ -287,109 +303,5 @@
         </div>
         <button id="compartilhar" class="btn btn-success hidden">Compartilhar no WhatsApp</button>
     </div>
-    <script>
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            }).format(value);
-        }
-
-        function parseCurrency(value) {
-            return parseFloat(value.replace(/\D/g, '')) / 100;
-        }
-
-        function formatInput(event) {
-            var input = event.target;
-            var value = parseCurrency(input.value);
-            input.value = formatCurrency(value);
-        }
-
-        function calcularValores() {
-            var valorProposta = parseCurrency(document.getElementById("valorProposta").value);
-            var outraEntrada = parseCurrency(document.getElementById("outraEntrada").value) || 0;
-            var taxaJurosMensal = parseFloat(document.getElementById("taxaJuros").value) / 100 || 0.01;
-
-            // Se houver um valor no campo "Outra Entrada", zere o campo "Entrada 20%"
-            var entrada = 0;
-            if (outraEntrada > 0) {
-                document.getElementById("entrada").innerText = formatCurrency(0);
-            } else {
-                entrada = valorProposta * 0.2;
-                document.getElementById("entrada").innerText = formatCurrency(entrada);
-            }
-
-            if (isNaN(valorProposta) || valorProposta <= 0) {
-                document.getElementById("resultados").classList.add("hidden");
-                document.getElementById("compartilhar").classList.add("hidden");
-                return;
-            }
-
-            var saldo = valorProposta - (outraEntrada || entrada);
-            document.getElementById("saldo").innerText = formatCurrency(saldo);
-
-            // Taxas de juros
-            var taxasJuros = [
-                { qtd: 12, taxa: 0.0 },
-                { qtd: 24, taxa: taxaJurosMensal },
-                { qtd: 36, taxa: taxaJurosMensal },
-                { qtd: 48, taxa: taxaJurosMensal },
-                { qtd: 60, taxa: taxaJurosMensal },
-                { qtd: 80, taxa: taxaJurosMensal }
-            ];
-
-            taxasJuros.forEach(function(parcela) {
-                var valorParcela;
-                if (parcela.taxa === 0) {
-                    valorParcela = saldo / parcela.qtd;
-                } else {
-                    var i = parcela.taxa; // Taxa mensal
-                    var n = parcela.qtd;
-                    valorParcela = saldo * i / (1 - Math.pow(1 + i, -n));
-                }
-                document.getElementById("parcela" + parcela.qtd).innerText = formatCurrency(valorParcela);
-            });
-
-            document.getElementById("resultados").classList.remove("hidden");
-            document.getElementById("compartilhar").classList.remove("hidden");
-        }
-
-        function compartilharWhatsApp() {
-            var valorProposta = document.getElementById("valorProposta").value;
-            var entrada = document.getElementById("entrada").innerText;
-            var outraEntrada = document.getElementById("outraEntrada").value;
-            var saldo = document.getElementById("saldo").innerText;
-            var taxaJuros = document.getElementById("taxaJuros").value;
-
-            var mensagem = `Proposta de Financiamento:\n\n`
-                + `Valor Proposta: ${valorProposta}\n`
-                + `Entrada 20%: ${entrada}\n`
-                + `Outra Entrada: ${outraEntrada}\n`
-                + `Saldo: ${saldo}\n`
-                + `Taxa de Juros Mensal: ${taxaJuros}%\n\n`
-                + `Parcelas:\n`;
-
-            var parcelas = ["12", "24", "36", "48", "60", "80"];
-            parcelas.forEach(function(parcela) {
-                var valorParcela = document.getElementById(`parcela${parcela}`).innerText;
-                mensagem += `Parcela ${parcela} meses: ${valorParcela}\n`;
-            });
-
-            var link = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
-            window.open(link, '_blank');
-        }
-
-        window.onload = function() {
-            document.getElementById("valorProposta").addEventListener("input", formatInput);
-            document.getElementById("outraEntrada").addEventListener("input", function(event) {
-                formatInput(event);
-                document.getElementById("entrada").innerText = formatCurrency(0);
-            });
-            document.getElementById("calcular").addEventListener("click", calcularValores);
-            document.getElementById("compartilhar").addEventListener("click", compartilharWhatsApp);
-            document.getElementById("compartilhar").classList.add("hidden");
-        }
-    </script>
 </body>
 </html>
-
