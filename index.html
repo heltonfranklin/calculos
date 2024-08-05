@@ -138,7 +138,7 @@
             var saldo = valorProposta - (outraEntrada || entrada);
             document.getElementById("saldo").innerText = formatCurrency(saldo);
 
-            var taxasJuros = [12, 24, 36, 48, 60, 80].map(qtd => ({ qtd, taxa: qtd === 12 ? 0.0 : taxaJurosMensal }));
+            var taxasJuros = [12, 24, 36, 48, 60, 80, 100, 120].map(qtd => ({ qtd, taxa: qtd === 12 ? 0.0 : taxaJurosMensal }));
 
             var parcelas = [];
             taxasJuros.forEach(parcela => {
@@ -189,7 +189,7 @@
                 + `Taxa de Juros Mensal: ${taxaJuros}%\n\n`
                 + `Parcelas:\n`;
 
-            var parcelas = ["12", "24", "36", "48", "60", "80"];
+            var parcelas = ["12", "24", "36", "48", "60", "80", "100", "120"];
             parcelas.forEach(function(parcela) {
                 var valorParcela = document.getElementById(`parcela${parcela}`).innerText;
                 mensagem += `Parcela ${parcela} meses: ${valorParcela}\n`;
@@ -304,6 +304,8 @@
                     <tr><td>48</td><td id="parcela48"></td></tr>
                     <tr><td>60</td><td id="parcela60"></td></tr>
                     <tr><td>80</td><td id="parcela80"></td></tr>
+                    <tr><td>100</td><td id="parcela100"></td></tr>
+                    <tr><td>120</td><td id="parcela120"></td></tr>
                 </tbody>
             </table>
         </div>
