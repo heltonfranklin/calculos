@@ -114,6 +114,7 @@
       line-height: 1.5;
       margin: 0 0 5px;
     }
+    /* Na página principal a tabela ocupa toda a largura */
     #resultados table {
       width: 100%;
       border-collapse: collapse;
@@ -154,7 +155,7 @@
       }
     }
   </style>
-  <!-- Inclusão da biblioteca html2pdf.js com defer (mantida para futuras funcionalidades, se necessário) -->
+  <!-- Inclusão da biblioteca html2pdf.js com defer (mantida para futuras funcionalidades) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js" defer></script>
 </head>
 <body>
@@ -323,7 +324,7 @@
       openNewWindowWithResults();
     };
 
-    // Abre uma nova janela com o resultado e exibe o botão de impressão
+    // Abre uma nova janela com o resultado – o layout será igual ao da página inicial
     const openNewWindowWithResults = () => {
       const resultadosContent = document.getElementById("resultados").outerHTML;
       const newWindow = window.open("", "_blank");
@@ -335,27 +336,79 @@
 <head>
   <meta charset="UTF-8">
   <title>Resultado da Proposta de Financiamento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
-    /* Estilos padrão para desktop */
+    /* Mesma formatação da página inicial */
     body { 
       font-family: 'Open Sans', sans-serif; 
-      color: #333; 
-      margin: 20px;
-      font-size: 16px;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
     }
-    .pdf-header { text-align: center; margin-bottom: 20px; }
-    .pdf-header img { max-width: 150px; margin-bottom: 10px; }
-    .pdf-header h1 { color: #007BFF; font-size: 24px; margin: 0; }
-    .pdf-section { margin-bottom: 20px; }
-    .pdf-section h2 { font-size: 18px; color: #0056b3; border-bottom: 2px solid #007BFF; padding-bottom: 5px; margin-bottom: 10px; }
-    .pdf-section p { font-size: 14px; line-height: 1.5; margin: 0 0 5px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    table, th, td { border: 1px solid #ddd; }
-    th, td { padding: 8px; text-align: center; }
-    th { background-color: #007BFF; color: #fff; }
-    tr:nth-child(even) { background-color: #f2f2f2; }
-    .pdf-footer { text-align: center; margin-top: 20px; font-size: 14px; }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #007BFF;
+      margin-bottom: 20px;
+    }
+    .pdf-section {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .pdf-section h2 {
+      font-size: 18px;
+      color: #0056b3;
+      border-bottom: 2px solid #007BFF;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+    .pdf-section p {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 5px;
+    }
+    /* A tabela ficará com largura 100% como na página inicial */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #007BFF;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .pdf-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
     button {
       background-color: #007BFF;
       color: white;
@@ -372,23 +425,17 @@
       background-color: #0056b3;
       box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
     }
-    /* Oculta o botão ao imprimir */
+    /* Regra para ocultar o botão na impressão */
     @media print {
       button { display: none; }
-    }
-    /* Estilos para dispositivos móveis: aumenta aproximadamente o dobro do tamanho */
-    @media (max-width: 600px) {
-      body { font-size: 32px; margin: 10px; }
-      .pdf-header h1 { font-size: 48px; }
-      .pdf-section h2 { font-size: 36px; }
-      .pdf-section p, table, th, td { font-size: 28px; }
-      button { font-size: 28px; padding: 20px; }
     }
   </style>
 </head>
 <body>
-  ${resultadosContent}
-  <button id="printButton">Imprimir</button>
+  <div class="container">
+    ${resultadosContent}
+    <button id="printButton">Imprimir</button>
+  </div>
   <script>
     document.getElementById('printButton').addEventListener('click', () => {
       window.print();
