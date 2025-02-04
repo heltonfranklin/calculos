@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <!-- Biblioteca html2pdf.js para exportação em PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
@@ -84,7 +82,7 @@
       background-color: #218838;
       border-color: #1e7e34;
     }
-    /* Template de resultado (usado também para impressão/exportação) */
+    /* Template de resultado (usado também para impressão) */
     #resultados {
       text-align: left;
     }
@@ -92,7 +90,7 @@
       text-align: center;
       margin-bottom: 20px;
     }
-    /* A imagem na header de resultados */
+    /* A imagem dentro da header de resultados */
     #resultados .pdf-header img {
       max-width: 150px;
       margin-bottom: 10px;
@@ -215,11 +213,7 @@
       </div>
     </div>
     <button id="calcular" class="btn btn-primary">Calcular</button>
-    <!-- Botão de Compartilhar via WhatsApp (opcional) -->
     <button id="compartilhar" class="btn btn-success hidden">Compartilhar no WhatsApp</button>
-    
-    <!-- Botão para exportar PDF -->
-    <button id="exportarPDF" class="btn btn-secondary hidden">Exportar PDF</button>
     
     <!-- Template de resultado -->
     <div id="resultados" class="hidden">
@@ -310,14 +304,13 @@
       if (isNaN(valorProposta) || valorProposta <= 0) {
         document.getElementById("resultados").classList.add("hidden");
         document.getElementById("compartilhar").classList.add("hidden");
-        document.getElementById("exportarPDF").classList.add("hidden");
         return;
       }
       
       const saldo = valorProposta - (outraEntrada || entrada);
       document.getElementById("saldo").innerText = formatCurrency(saldo);
 
-      // Calcula as parcelas para as diferentes opções (todas com juros, inclusive 12 meses)
+      // Calcula as parcelas para as diferentes opções (incluindo 12 meses com juros)
       const opcoesParcelas = [12, 24, 36, 48, 60, 80, 100, 120];
       opcoesParcelas.forEach(qtd => {
         const valorParcela = saldo * taxaJurosMensal / (1 - Math.pow(1 + taxaJurosMensal, -qtd));
@@ -337,7 +330,6 @@
       // Exibe os botões e o conteúdo dos resultados
       document.getElementById("resultados").classList.remove("hidden");
       document.getElementById("compartilhar").classList.remove("hidden");
-      document.getElementById("exportarPDF").classList.remove("hidden");
 
       openNewWindowWithResults();
     };
@@ -406,7 +398,7 @@
       border-bottom: 2px solid #007BFF;
       padding-bottom: 5px;
       margin-bottom: 10px;
-      text-align: center; /* Título da seção centralizado */
+      text-align: center;
     }
     .pdf-section p {
       font-size: 14px;
@@ -453,7 +445,7 @@
       background-color: #0056b3;
       box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
     }
-    /* Regras de impressão/exportação (PDF) para manter o layout igual ao da tela do celular */
+    /* Regras de impressão para manter o layout igual ao da tela do celular */
     @media print {
       @page {
         size: auto;
@@ -475,22 +467,13 @@
   </style>
 </head>
 <body>
-  <div class="container" id="containerPDF">
+  <div class="container">
     ${resultadosContent}
-    <button id="printButton">Exportar PDF</button>
+    <button id="printButton">Imprimir</button>
   </div>
   <script>
-    // Em vez de imprimir, ao clicar "Exportar PDF" usamos a biblioteca html2pdf
     document.getElementById('printButton').addEventListener('click', () => {
-      const element = document.getElementById('containerPDF');
-      const opt = {
-        margin:       0.3,
-        filename:     'proposta_financiamento.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'cm', format: 'a5', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(element).save();
+      window.print();
     });
   <\/script>
 </body>
