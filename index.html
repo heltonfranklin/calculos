@@ -90,6 +90,7 @@
       text-align: center;
       margin-bottom: 20px;
     }
+    /* A imagem da logomarca dentro da header será centralizada na nova janela via CSS */
     #resultados .pdf-header img {
       max-width: 150px;
       margin-bottom: 10px;
@@ -99,8 +100,10 @@
       font-size: 24px;
       margin: 0;
     }
+    /* Seções permanecem alinhadas à esquerda */
     #resultados .pdf-section {
       margin-bottom: 20px;
+      text-align: left;
     }
     #resultados .pdf-section h2 {
       font-size: 18px;
@@ -114,7 +117,7 @@
       line-height: 1.5;
       margin: 0 0 5px;
     }
-    /* Na página principal a tabela ocupa toda a largura */
+    /* Tabela ocupa 100% */
     #resultados table {
       width: 100%;
       border-collapse: collapse;
@@ -155,8 +158,6 @@
       }
     }
   </style>
-  <!-- Inclusão da biblioteca html2pdf.js com defer (mantida para futuras funcionalidades) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js" defer></script>
 </head>
 <body>
   <main class="container">
@@ -172,6 +173,13 @@
       <label for="telefone">Telefone</label>
       <div class="input-wrapper">
         <input type="tel" id="telefone" placeholder="DDD + Número">
+      </div>
+    </div>
+    <!-- Novo campo Empreendimento -->
+    <div class="form-row">
+      <label for="empreendimento">Empreendimento</label>
+      <div class="input-wrapper">
+        <input type="text" id="empreendimento" placeholder="Empreendimento">
       </div>
     </div>
     <div class="form-row">
@@ -205,9 +213,12 @@
       </div>
     </div>
     <button id="calcular" class="btn btn-primary">Calcular</button>
-    <!-- Template de resultado (usado também para impressão) -->
+    <button id="compartilhar" class="btn btn-success hidden">Compartilhar no WhatsApp</button>
+    
+    <!-- Template de resultado -->
     <div id="resultados" class="hidden">
       <div class="pdf-header">
+        <!-- Nesta parte, a imagem será centralizada na nova janela via CSS -->
         <img src="rdcaimoveis.png" alt="RDCA Imóveis">
         <h1>Proposta de Financiamento</h1>
       </div>
@@ -218,6 +229,8 @@
       </div>
       <div class="pdf-section">
         <h2>Detalhes da Proposta</h2>
+        <!-- Novo campo Empreendimento exibido como primeiro item -->
+        <p><strong>Empreendimento:</strong> <span id="pdfEmpreendimento"></span></p>
         <p><strong>Valor Proposta:</strong> <span id="pdfValorProposta"></span></p>
         <p><strong>Entrada 20%:</strong> <span id="pdfEntrada"></span></p>
         <p><strong>Outra Entrada:</strong> <span id="pdfOutraEntrada"></span></p>
@@ -249,7 +262,6 @@
         <p>Obrigado por simular sua proposta conosco!</p>
       </div>
     </div>
-    <button id="compartilhar" class="btn btn-success hidden">Compartilhar no WhatsApp</button>
   </main>
 
   <!-- JavaScript -->
@@ -277,6 +289,7 @@
     const calcularValores = () => {
       const nome = document.getElementById("nome").value;
       const telefone = document.getElementById("telefone").value;
+      const empreendimento = document.getElementById("empreendimento").value;
       const valorPropostaInput = document.getElementById("valorProposta").value;
       const valorProposta = parseCurrency(valorPropostaInput);
       const outraEntrada = parseCurrency(document.getElementById("outraEntrada").value) || 0;
@@ -309,22 +322,25 @@
         document.getElementById("parcela" + qtd).innerText = formatCurrency(valorParcela);
       });
 
-      // Atualiza os dados do template para impressão
+      // Atualiza os dados do template para exibição
       document.getElementById("pdfNome").innerText = nome;
       document.getElementById("pdfTelefone").innerText = telefone;
+      document.getElementById("pdfEmpreendimento").innerText = empreendimento;
       document.getElementById("pdfValorProposta").innerText = valorPropostaInput;
       document.getElementById("pdfEntrada").innerText = document.getElementById("entrada").innerText;
       document.getElementById("pdfOutraEntrada").innerText = document.getElementById("outraEntrada").value;
       document.getElementById("pdfSaldo").innerText = document.getElementById("saldo").innerText;
       document.getElementById("pdfTaxaJuros").innerText = document.getElementById("taxaJuros").value;
       
+      // Exibe os botões e o conteúdo dos resultados
       document.getElementById("resultados").classList.remove("hidden");
       document.getElementById("compartilhar").classList.remove("hidden");
 
       openNewWindowWithResults();
     };
 
-    // Abre uma nova janela com o resultado – o layout será igual ao da página inicial
+    // Abre uma nova janela com o resultado – nesta janela, a logomarca e os títulos das seções ficarão centralizados,
+    // enquanto os dados preenchidos permanecem alinhados à esquerda.
     const openNewWindowWithResults = () => {
       const resultadosContent = document.getElementById("resultados").outerHTML;
       const newWindow = window.open("", "_blank");
@@ -340,7 +356,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
-    /* Mesma formatação da página inicial */
+    /* Estilos para a nova janela */
     body { 
       font-family: 'Open Sans', sans-serif; 
       background-color: #f4f4f4;
@@ -356,16 +372,23 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
       width: 90%;
       max-width: 400px;
-      text-align: center;
+      text-align: left;
     }
-    .logo {
-      width: 120px;
+    /* Centraliza a logomarca e os títulos das seções */
+    .pdf-header {
+      text-align: center;
       margin-bottom: 20px;
+    }
+    .pdf-header img {
+      max-width: 150px;
+      margin: 0 auto 10px;
+      display: block;
     }
     h1 {
       font-size: 20px;
       font-weight: 700;
       color: #007BFF;
+      text-align: center;
       margin-bottom: 20px;
     }
     .pdf-section {
@@ -378,13 +401,13 @@
       border-bottom: 2px solid #007BFF;
       padding-bottom: 5px;
       margin-bottom: 10px;
+      text-align: center; /* Título da seção centralizado */
     }
     .pdf-section p {
       font-size: 14px;
       line-height: 1.5;
       margin: 0 0 5px;
     }
-    /* A tabela ficará com largura 100% como na página inicial */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -425,7 +448,6 @@
       background-color: #0056b3;
       box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
     }
-    /* Regra para ocultar o botão na impressão */
     @media print {
       button { display: none; }
     }
@@ -449,7 +471,6 @@
     // Compartilha os dados da proposta via WhatsApp
     const compartilharWhatsApp = () => {
       const nome = document.getElementById("nome").value;
-      // Remove caracteres não numéricos do telefone
       const telefone = document.getElementById("telefone").value.replace(/\D/g, '');
       const valorProposta = document.getElementById("valorProposta").value;
       const entrada = document.getElementById("entrada").innerText;
@@ -480,7 +501,6 @@
       });
       document.getElementById("calcular").addEventListener("click", calcularValores);
       document.getElementById("compartilhar").addEventListener("click", compartilharWhatsApp);
-      // Inicialmente, o botão de compartilhamento fica oculto
       document.getElementById("compartilhar").classList.add("hidden");
     });
   </script>
