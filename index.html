@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <title>Cálculo de PMT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Bootstrap CSS (opcional) -->
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
     body {
       font-family: 'Open Sans', sans-serif;
       display: flex;
@@ -18,7 +17,6 @@
       min-height: 100vh;
       background-color: #f4f4f4;
       margin: 0;
-      padding: 0;
     }
     .container {
       background-color: #fff;
@@ -82,18 +80,27 @@
     }
     .btn-success:hover {
       background-color: #218838;
+      border-color: #1e7e34;
     }
-    .hidden {
-      display: none;
+    /* Template de resultado (usado também para impressão) */
+    #resultados {
+      text-align: left;
     }
     #resultados .pdf-header {
       text-align: center;
       margin-bottom: 20px;
     }
+    /* A imagem dentro da header de resultados */
     #resultados .pdf-header img {
       max-width: 150px;
       margin-bottom: 10px;
     }
+    #resultados .pdf-header h1 {
+      color: #007BFF;
+      font-size: 24px;
+      margin: 0;
+    }
+    /* Seções permanecem alinhadas à esquerda */
     #resultados .pdf-section {
       margin-bottom: 20px;
       text-align: left;
@@ -110,6 +117,7 @@
       line-height: 1.5;
       margin: 0 0 5px;
     }
+    /* Tabela ocupa 100% */
     #resultados table {
       width: 100%;
       border-collapse: collapse;
@@ -137,6 +145,9 @@
       margin-top: 20px;
       font-size: 14px;
     }
+    .hidden {
+      display: none;
+    }
     @media (max-width: 600px) {
       input[type="text"],
       input[type="number"],
@@ -149,13 +160,9 @@
   </style>
 </head>
 <body>
-<div class="container">
-
-  <!-- FORMULÁRIO INICIAL -->
-  <div id="formulario">
+  <main class="container">
     <img src="rdcaimoveis.png" alt="RDCA Imóveis" class="logo">
     <h1>Cálculo de PMT</h1>
-
     <div class="form-row">
       <label for="nome">Nome</label>
       <div class="input-wrapper">
@@ -168,6 +175,7 @@
         <input type="tel" id="telefone" placeholder="DDD + Número">
       </div>
     </div>
+    <!-- Novo campo Empreendimento -->
     <div class="form-row">
       <label for="empreendimento">Empreendimento</label>
       <div class="input-wrapper">
@@ -204,216 +212,310 @@
         <div id="saldo" style="text-align: center;">R$ 0,00</div>
       </div>
     </div>
-
     <button id="calcular" class="btn btn-primary">Calcular</button>
+    <button id="compartilhar" class="btn btn-success hidden">Compartilhar no WhatsApp</button>
+    
+    <!-- Template de resultado -->
+    <div id="resultados" class="hidden">
+      <div class="pdf-header">
+        <img src="rdcaimoveis.png" alt="RDCA Imóveis">
+        <h1>Proposta de Financiamento</h1>
+      </div>
+      <div class="pdf-section">
+        <h2>Dados do Cliente</h2>
+        <p><strong>Nome:</strong> <span id="pdfNome"></span></p>
+        <p><strong>Telefone:</strong> <span id="pdfTelefone"></span></p>
+      </div>
+      <div class="pdf-section">
+        <h2>Detalhes da Proposta</h2>
+        <!-- Novo campo Empreendimento exibido como primeiro item -->
+        <p><strong>Empreendimento:</strong> <span id="pdfEmpreendimento"></span></p>
+        <p><strong>Valor Proposta:</strong> <span id="pdfValorProposta"></span></p>
+        <p><strong>Entrada 20%:</strong> <span id="pdfEntrada"></span></p>
+        <p><strong>Outra Entrada:</strong> <span id="pdfOutraEntrada"></span></p>
+        <p><strong>Saldo:</strong> <span id="pdfSaldo"></span></p>
+        <p><strong>Taxa de Juros Mensal:</strong> <span id="pdfTaxaJuros"></span></p>
+      </div>
+      <div class="pdf-section">
+        <h2>Opções de Parcelamento</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Qtde Parcelas</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>12</td><td id="parcela12"></td></tr>
+            <tr><td>24</td><td id="parcela24"></td></tr>
+            <tr><td>36</td><td id="parcela36"></td></tr>
+            <tr><td>48</td><td id="parcela48"></td></tr>
+            <tr><td>60</td><td id="parcela60"></td></tr>
+            <tr><td>80</td><td id="parcela80"></td></tr>
+            <tr><td>100</td><td id="parcela100"></td></tr>
+            <tr><td>120</td><td id="parcela120"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pdf-footer">
+        <p>Obrigado por simular sua proposta conosco!</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- JavaScript -->
+  <script>
+    'use strict';
+
+    // Função para formatar valores como moeda BRL
+    const formatCurrency = value =>
+      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+    // Remove caracteres não numéricos e converte para número
+    const parseCurrency = value => {
+      const numericValue = value.replace(/\D/g, '');
+      return parseFloat(numericValue) / 100 || 0;
+    };
+
+    // Formata o valor digitado no campo de moeda
+    const formatInput = event => {
+      const input = event.target;
+      const value = parseCurrency(input.value);
+      input.value = formatCurrency(value);
+    };
+
+    // Calcula os valores da proposta e atualiza a interface
+    const calcularValores = () => {
+      const nome = document.getElementById("nome").value;
+      const telefone = document.getElementById("telefone").value;
+      const empreendimento = document.getElementById("empreendimento").value;
+      const valorPropostaInput = document.getElementById("valorProposta").value;
+      const valorProposta = parseCurrency(valorPropostaInput);
+      const outraEntrada = parseCurrency(document.getElementById("outraEntrada").value) || 0;
+      
+      // Permite taxa de juros 0% se informada
+      const taxaJurosInput = parseFloat(document.getElementById("taxaJuros").value);
+      const taxaJurosMensal = !isNaN(taxaJurosInput) ? taxaJurosInput / 100 : 0.01;
+
+      // Se houver outra entrada, não considera a entrada de 20%
+      const entrada = outraEntrada > 0 ? 0 : valorProposta * 0.2;
+      document.getElementById("entrada").innerText = formatCurrency(entrada);
+
+      if (isNaN(valorProposta) || valorProposta <= 0) {
+        document.getElementById("resultados").classList.add("hidden");
+        document.getElementById("compartilhar").classList.add("hidden");
+        return;
+      }
+      
+      const saldo = valorProposta - (outraEntrada || entrada);
+      document.getElementById("saldo").innerText = formatCurrency(saldo);
+
+      // Calcula as parcelas para as diferentes opções (incluindo 12 meses com juros)
+      const opcoesParcelas = [12, 24, 36, 48, 60, 80, 100, 120];
+      opcoesParcelas.forEach(qtd => {
+        const valorParcela = saldo * taxaJurosMensal / (1 - Math.pow(1 + taxaJurosMensal, -qtd));
+        document.getElementById("parcela" + qtd).innerText = formatCurrency(valorParcela);
+      });
+
+      // Atualiza os dados do template para exibição
+      document.getElementById("pdfNome").innerText = nome;
+      document.getElementById("pdfTelefone").innerText = telefone;
+      document.getElementById("pdfEmpreendimento").innerText = empreendimento;
+      document.getElementById("pdfValorProposta").innerText = valorPropostaInput;
+      document.getElementById("pdfEntrada").innerText = document.getElementById("entrada").innerText;
+      document.getElementById("pdfOutraEntrada").innerText = document.getElementById("outraEntrada").value;
+      document.getElementById("pdfSaldo").innerText = document.getElementById("saldo").innerText;
+      document.getElementById("pdfTaxaJuros").innerText = document.getElementById("taxaJuros").value;
+      
+      // Exibe os botões e o conteúdo dos resultados
+      document.getElementById("resultados").classList.remove("hidden");
+      document.getElementById("compartilhar").classList.remove("hidden");
+
+      openNewWindowWithResults();
+    };
+
+    // Abre uma nova janela com o resultado
+    // Nesta janela, a logomarca e os títulos das seções ficarão centralizados,
+    // enquanto os dados preenchidos permanecem alinhados à esquerda.
+    const openNewWindowWithResults = () => {
+      const resultadosContent = document.getElementById("resultados").outerHTML;
+      const newWindow = window.open("", "_blank");
+      if (!newWindow) return;
+      const newDoc = newWindow.document;
+      newDoc.open();
+      newDoc.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultado da Proposta de Financiamento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Estilos para a nova janela */
+    body { 
+      font-family: 'Open Sans', sans-serif; 
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: left;
+      margin: auto;
+    }
+    /* Centraliza a logomarca e os títulos das seções */
+    .pdf-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .pdf-header img {
+      max-width: 150px;
+      margin: 0 auto 10px;
+      display: block;
+    }
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #007BFF;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .pdf-section {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .pdf-section h2 {
+      font-size: 18px;
+      color: #0056b3;
+      border-bottom: 2px solid #007BFF;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .pdf-section p {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #007BFF;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .pdf-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    }
+    /* Regras de impressão para manter o layout igual ao da tela do celular */
+    @media print {
+      @page {
+        size: auto;
+        margin: 0;
+      }
+      body {
+        background: none;
+        padding: 0;
+      }
+      .container {
+        width: 400px;
+        margin: auto;
+        box-shadow: none;
+      }
+      button {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    ${resultadosContent}
+    <button id="printButton">Imprimir</button>
   </div>
+  <script>
+    document.getElementById('printButton').addEventListener('click', () => {
+      window.print();
+    });
+  <\/script>
+</body>
+</html>`);
+      newDoc.close();
+    };
 
-  <!-- RESULTADO APÓS CALCULAR -->
-  <div id="resultados" class="hidden">
-    <div class="pdf-header">
-      <img src="rdcaimoveis.png" alt="RDCA Imóveis">
-      <h1>Proposta de Financiamento</h1>
-    </div>
+    // Compartilha os dados da proposta via WhatsApp
+    const compartilharWhatsApp = () => {
+      const nome = document.getElementById("nome").value;
+      const telefone = document.getElementById("telefone").value.replace(/\D/g, '');
+      const valorProposta = document.getElementById("valorProposta").value;
+      const entrada = document.getElementById("entrada").innerText;
+      const outraEntrada = document.getElementById("outraEntrada").value;
+      const saldo = document.getElementById("saldo").innerText;
+      const taxaJuros = document.getElementById("taxaJuros").value;
+      let mensagem = `Proposta de Financiamento para ${nome}:\n\n` +
+                     `Valor Proposta: ${valorProposta}\n` +
+                     `Entrada 20%: ${entrada}\n` +
+                     `Outra Entrada: ${outraEntrada}\n` +
+                     `Saldo: ${saldo}\n` +
+                     `Taxa de Juros Mensal: ${taxaJuros}%\n\nParcelas:\n`;
+      const opcoesParcelas = [12, 24, 36, 48, 60, 80, 100, 120];
+      opcoesParcelas.forEach(qtd => {
+        const valorParcela = document.getElementById('parcela' + qtd).innerText;
+        mensagem += `Parcela ${qtd} meses: ${valorParcela}\n`;
+      });
+      const link = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
+      window.open(link, '_blank');
+    };
 
-    <div class="pdf-section">
-      <h2>Dados do Cliente</h2>
-      <p><strong>Nome:</strong> <span id="pdfNome"></span></p>
-      <p><strong>Telefone:</strong> <span id="pdfTelefone"></span></p>
-    </div>
-
-    <div class="pdf-section">
-      <h2>Detalhes da Proposta</h2>
-      <p><strong>Empreendimento:</strong> <span id="pdfEmpreendimento"></span></p>
-      <p><strong>Valor Proposta:</strong> <span id="pdfValorProposta"></span></p>
-      <p><strong>Entrada 20%:</strong> <span id="pdfEntrada"></span></p>
-      <p><strong>Outra Entrada:</strong> <span id="pdfOutraEntrada"></span></p>
-      <p><strong>Saldo:</strong> <span id="pdfSaldo"></span></p>
-      <p><strong>Taxa de Juros Mensal:</strong> <span id="pdfTaxaJuros"></span></p>
-    </div>
-
-    <div class="pdf-section">
-      <h2>Opções de Parcelamento</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Qtde Parcelas</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>12</td><td id="parcela12"></td></tr>
-          <tr><td>24</td><td id="parcela24"></td></tr>
-          <tr><td>36</td><td id="parcela36"></td></tr>
-          <tr><td>48</td><td id="parcela48"></td></tr>
-          <tr><td>60</td><td id="parcela60"></td></tr>
-          <tr><td>80</td><td id="parcela80"></td></tr>
-          <tr><td>100</td><td id="parcela100"></td></tr>
-          <tr><td>120</td><td id="parcela120"></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="pdf-footer">
-      <p>Obrigado por simular sua proposta conosco!</p>
-    </div>
-
-    <button id="compartilhar" class="btn btn-success" style="margin-top: 10px;">Compartilhar no WhatsApp</button>
-    <button id="btnImprimir" class="btn btn-secondary" style="margin-top: 10px;">Imprimir</button>
-    <button id="btnPDF" class="btn btn-dark" style="margin-top: 10px;">Exportar em PDF</button>
-  </div>
-
-</div>
-
-<!-- Importa a biblioteca html2pdf via CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"
-        integrity="sha512-vDKWohFJw0akBphZLJi6LDQ6TzrKIuUSCCquFHFpFFp2Nta9Q9fl8J7gfzrOUy1rR1nTc4PqHz8TzK5SRPBi1w=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer">
-</script>
-
-<script>
-'use strict';
-
-const elFormulario       = document.getElementById('formulario');
-const elResultados       = document.getElementById('resultados');
-const elNome             = document.getElementById('nome');
-const elTelefone         = document.getElementById('telefone');
-const elEmpreendimento   = document.getElementById('empreendimento');
-const elValorProposta    = document.getElementById('valorProposta');
-const elEntrada          = document.getElementById('entrada');
-const elOutraEntrada     = document.getElementById('outraEntrada');
-const elTaxaJuros        = document.getElementById('taxaJuros');
-const elSaldo            = document.getElementById('saldo');
-
-const btnCalcular        = document.getElementById('calcular');
-const btnCompartilhar    = document.getElementById('compartilhar');
-const btnImprimir        = document.getElementById('btnImprimir');
-const btnPDF             = document.getElementById('btnPDF');
-
-// Opções de parcelas
-const opcoesParcelas = [12, 24, 36, 48, 60, 80, 100, 120];
-
-// Funções de utilitárias
-function formatCurrency(value) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-}
-function parseCurrency(value) {
-  if (!value) return 0;
-  const numericValue = value.replace(/\D/g, '');
-  return parseFloat(numericValue) / 100 || 0;
-}
-
-// PMT
-function calcularPMT(saldo, taxaMensal, numParcelas) {
-  if (taxaMensal === 0) {
-    return saldo / numParcelas;
-  }
-  return saldo * taxaMensal / (1 - Math.pow(1 + taxaMensal, -numParcelas));
-}
-
-// Formatar enquanto digita
-elValorProposta.addEventListener('input', (e) => {
-  const val = parseCurrency(e.target.value);
-  e.target.value = formatCurrency(val);
-});
-elOutraEntrada.addEventListener('input', (e) => {
-  const val = parseCurrency(e.target.value);
-  e.target.value = formatCurrency(val);
-  elEntrada.textContent = formatCurrency(0);
-});
-
-// Calcular valores
-function calcularValores() {
-  const nome           = elNome.value.trim();
-  const telefone       = elTelefone.value.trim();
-  const empreendimento = elEmpreendimento.value.trim();
-  const valorProp      = parseCurrency(elValorProposta.value);
-  const outraEntr      = parseCurrency(elOutraEntrada.value);
-
-  let taxa = parseFloat(elTaxaJuros.value);
-  if (isNaN(taxa) || taxa < 0) {
-    taxa = 0;
-  }
-  const taxaMensal = taxa / 100;
-
-  if (valorProp <= 0) {
-    alert('Informe um valor de proposta válido.');
-    return;
-  }
-  const entrada20 = (outraEntr > 0) ? 0 : (valorProp * 0.2);
-  elEntrada.textContent = formatCurrency(entrada20);
-
-  const saldoFinal = valorProp - (outraEntr || entrada20);
-  elSaldo.textContent = formatCurrency(saldoFinal);
-
-  opcoesParcelas.forEach(qtd => {
-    const parcela = calcularPMT(saldoFinal, taxaMensal, qtd);
-    const td = document.getElementById('parcela' + qtd);
-    if (td) td.textContent = formatCurrency(parcela);
-  });
-
-  document.getElementById("pdfNome").textContent           = nome;
-  document.getElementById("pdfTelefone").textContent       = telefone;
-  document.getElementById("pdfEmpreendimento").textContent = empreendimento;
-  document.getElementById("pdfValorProposta").textContent  = elValorProposta.value;
-  document.getElementById("pdfEntrada").textContent        = elEntrada.textContent;
-  document.getElementById("pdfOutraEntrada").textContent   = elOutraEntrada.value;
-  document.getElementById("pdfSaldo").textContent          = elSaldo.textContent;
-  document.getElementById("pdfTaxaJuros").textContent      = taxa.toFixed(2).replace('.', ',');
-
-  elFormulario.classList.add('hidden');
-  elResultados.classList.remove('hidden');
-}
-
-// WhatsApp
-function compartilharWhatsApp() {
-  const nome         = document.getElementById("pdfNome").textContent;
-  const telApenasNum = document.getElementById("pdfTelefone").textContent.replace(/\D/g, '');
-  const valorProp    = document.getElementById("pdfValorProposta").textContent;
-  const entrada      = document.getElementById("pdfEntrada").textContent;
-  const outraEntr    = document.getElementById("pdfOutraEntrada").textContent;
-  const saldo        = document.getElementById("pdfSaldo").textContent;
-  const taxa         = document.getElementById("pdfTaxaJuros").textContent;
-
-  let mensagem = `Proposta de Financiamento para ${nome}:\n\n` +
-                 `Valor Proposta: ${valorProp}\n` +
-                 `Entrada 20%: ${entrada}\n` +
-                 `Outra Entrada: ${outraEntr}\n` +
-                 `Saldo: ${saldo}\n` +
-                 `Taxa de Juros Mensal: ${taxa}%\n\nParcelas:\n`;
-
-  opcoesParcelas.forEach(qtd => {
-    const valorParcela = document.getElementById("parcela" + qtd).textContent;
-    mensagem += `${qtd} parcelas: ${valorParcela}\n`;
-  });
-
-  const linkWhats = `https://wa.me/55${telApenasNum}?text=${encodeURIComponent(mensagem)}`;
-  window.open(linkWhats, '_blank');
-}
-
-// Imprimir
-function imprimirProposta() {
-  window.print();
-}
-
-// Exportar PDF com html2pdf
-function exportarPDF() {
-  const element = document.getElementById('resultados');
-  const opt = {
-    margin: 0.5,
-    filename: 'proposta-financiamento.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(element).save();
-}
-
-// Listeners
-btnCalcular.addEventListener('click', calcularValores);
-btnCompartilhar.addEventListener('click', compartilharWhatsApp);
-btnImprimir.addEventListener('click', imprimirProposta);
-btnPDF.addEventListener('click', exportarPDF);
-</script>
+    // Adiciona os event listeners após o carregamento do DOM
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("valorProposta").addEventListener("input", formatInput);
+      document.getElementById("outraEntrada").addEventListener("input", event => {
+        formatInput(event);
+        document.getElementById("entrada").innerText = formatCurrency(0);
+      });
+      document.getElementById("calcular").addEventListener("click", calcularValores);
+      document.getElementById("compartilhar").addEventListener("click", compartilharWhatsApp);
+      document.getElementById("compartilhar").classList.add("hidden");
+    });
+  </script>
 </body>
 </html>
