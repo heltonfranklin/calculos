@@ -90,7 +90,7 @@
       text-align: center;
       margin-bottom: 20px;
     }
-    /* A imagem da logomarca dentro da header será centralizada na nova janela via CSS */
+    /* A imagem dentro da header de resultados */
     #resultados .pdf-header img {
       max-width: 150px;
       margin-bottom: 10px;
@@ -218,7 +218,6 @@
     <!-- Template de resultado -->
     <div id="resultados" class="hidden">
       <div class="pdf-header">
-        <!-- Nesta parte, a imagem será centralizada na nova janela via CSS -->
         <img src="rdcaimoveis.png" alt="RDCA Imóveis">
         <h1>Proposta de Financiamento</h1>
       </div>
@@ -311,10 +310,9 @@
       const saldo = valorProposta - (outraEntrada || entrada);
       document.getElementById("saldo").innerText = formatCurrency(saldo);
 
-      // Calcula as parcelas para as diferentes opções, agora aplicando juros para 12 meses também
+      // Calcula as parcelas para as diferentes opções (incluindo 12 meses com juros)
       const opcoesParcelas = [12, 24, 36, 48, 60, 80, 100, 120];
       opcoesParcelas.forEach(qtd => {
-        // Cálculo com juros para todas as opções
         const valorParcela = saldo * taxaJurosMensal / (1 - Math.pow(1 + taxaJurosMensal, -qtd));
         document.getElementById("parcela" + qtd).innerText = formatCurrency(valorParcela);
       });
@@ -336,7 +334,8 @@
       openNewWindowWithResults();
     };
 
-    // Abre uma nova janela com o resultado – nesta janela, a logomarca e os títulos das seções ficarão centralizados,
+    // Abre uma nova janela com o resultado
+    // Nesta janela, a logomarca e os títulos das seções ficarão centralizados,
     // enquanto os dados preenchidos permanecem alinhados à esquerda.
     const openNewWindowWithResults = () => {
       const resultadosContent = document.getElementById("resultados").outerHTML;
@@ -370,6 +369,7 @@
       width: 90%;
       max-width: 400px;
       text-align: left;
+      margin: auto;
     }
     /* Centraliza a logomarca e os títulos das seções */
     .pdf-header {
@@ -398,7 +398,7 @@
       border-bottom: 2px solid #007BFF;
       padding-bottom: 5px;
       margin-bottom: 10px;
-      text-align: center; /* Título da seção centralizado */
+      text-align: center;
     }
     .pdf-section p {
       font-size: 14px;
@@ -445,8 +445,24 @@
       background-color: #0056b3;
       box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
     }
+    /* Regras de impressão para manter o layout igual ao da tela do celular */
     @media print {
-      button { display: none; }
+      @page {
+        size: auto;
+        margin: 0;
+      }
+      body {
+        background: none;
+        padding: 0;
+      }
+      .container {
+        width: 400px;
+        margin: auto;
+        box-shadow: none;
+      }
+      button {
+        display: none;
+      }
     }
   </style>
 </head>
